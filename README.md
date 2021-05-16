@@ -34,11 +34,14 @@ The methods are listed here -
 
 How to Call Library?
 ----------------------
+````md
+```python
  from Corona_Tracker import CoronaTracker #importing the library
  Corona =CoronaTracker('Bangladesh') #Give contry name as parameter 
  Corona.loadData()  #Calling the loadData function to get all the information 
  TodayCase = Corona.todayCases ()   #Getting today's corona virus case number from the loaded data.   
-
+```
+````
 
 Screenshot:
 -----------------

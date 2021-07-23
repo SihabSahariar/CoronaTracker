@@ -48,3 +48,8 @@ Screenshot:
 <img src="screenshot/gui.JPG">
           
 <img src="screenshot/nonet.JPG">
+
+Screenshot [DASHBOARD]:
+-----------------
+<img src="DASH GUI [UPDATED]/ss.JPG">
+

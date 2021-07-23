@@ -1,0 +1,327 @@
+import sys
+import time
+import urllib.request
+from urllib.parse import urlencode
+import json
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QPixmap
+import country
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class GUI(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.setFixedSize(1047, 468)
+        Dialog.setWindowTitle('COVID-19 DASHBOARD')
+        Dialog.setStyleSheet("QDialog {\n"
+"    \n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.507463 rgba(0, 39, 14, 255), stop:1 rgba(39, 63, 88, 216));\n"
+"}")
+        self.bg = QtWidgets.QFrame(Dialog)
+        self.bg.setGeometry(QtCore.QRect(10, 58, 1021, 381))
+        self.bg.setStyleSheet("#bg {\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(14, 142, 185, 200), stop:1 rgba(25, 25, 25, 80));\n"
+"border-radius: 20px\n"
+"        \n"
+"}")
+        self.bg.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.bg.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.bg.setObjectName("bg")
+        self.frame_recovered = QtWidgets.QFrame(self.bg)
+        self.frame_recovered.setGeometry(QtCore.QRect(30, 190, 220, 141))
+        self.frame_recovered.setStyleSheet("#frame_recovered {\n"
+"background-color: rgb(76, 217, 123);\n"
+"    border-radius: 20px;\n"
+"}\n"
+"")
+        self.frame_recovered.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_recovered.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_recovered.setObjectName("frame_recovered")
+        self.recovered = QtWidgets.QLabel(self.frame_recovered)
+        self.recovered.setGeometry(QtCore.QRect(20, 10, 181, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.recovered.setFont(font)
+        self.recovered.setStyleSheet("color: rgb(255, 255, 255);")
+        self.recovered.setAlignment(QtCore.Qt.AlignCenter)
+        self.recovered.setObjectName("recovered")
+        self.recoveredCount = QtWidgets.QLabel(self.frame_recovered)
+        self.recoveredCount.setGeometry(QtCore.QRect(10, 90, 201, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.recoveredCount.setFont(font)
+        self.recoveredCount.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.recoveredCount.setStyleSheet("color: rgb(255, 255, 255);")
+        self.recoveredCount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.recoveredCount.setObjectName("recoveredCount")
+        self.frame_affected = QtWidgets.QFrame(self.bg)
+        self.frame_affected.setGeometry(QtCore.QRect(30, 30, 330, 141))
+        self.frame_affected.setStyleSheet("#frame_affected {\n"
+"    background-color: #FFB259;\n"
+"    border-radius: 20px;\n"
+"}")
+        self.frame_affected.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_affected.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_affected.setObjectName("frame_affected")
+        self.confirmed = QtWidgets.QLabel(self.frame_affected)
+        self.confirmed.setGeometry(QtCore.QRect(20, 10, 291, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(19)
+        font.setBold(True)
+        font.setWeight(75)
+        self.confirmed.setFont(font)
+        self.confirmed.setStyleSheet("color: rgb(255, 255, 255);")
+        self.confirmed.setAlignment(QtCore.Qt.AlignCenter)
+        self.confirmed.setObjectName("confirmed")
+        self.confirmedCount = QtWidgets.QLabel(self.frame_affected)
+        self.confirmedCount.setGeometry(QtCore.QRect(20, 80, 291, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(28)
+        font.setBold(True)
+        font.setWeight(75)
+        self.confirmedCount.setFont(font)
+        self.confirmedCount.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.confirmedCount.setStyleSheet("color: rgb(255, 255, 255);")
+        self.confirmedCount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.confirmedCount.setObjectName("confirmedCount")
+        self.frame_deaths = QtWidgets.QFrame(self.bg)
+        self.frame_deaths.setGeometry(QtCore.QRect(379, 30, 330, 141))
+        self.frame_deaths.setStyleSheet("background-color: rgb(255, 89, 89);\n"
+"    border-radius: 20px;")
+        self.frame_deaths.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_deaths.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_deaths.setObjectName("frame_deaths")
+        self.deaths = QtWidgets.QLabel(self.frame_deaths)
+        self.deaths.setGeometry(QtCore.QRect(20, 10, 291, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(19)
+        font.setBold(True)
+        font.setWeight(75)
+        self.deaths.setFont(font)
+        self.deaths.setStyleSheet("color: rgb(255, 255, 255);")
+        self.deaths.setAlignment(QtCore.Qt.AlignCenter)
+        self.deaths.setObjectName("deaths")
+        self.deathsCount = QtWidgets.QLabel(self.frame_deaths)
+        self.deathsCount.setGeometry(QtCore.QRect(20, 80, 291, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(28)
+        font.setBold(True)
+        font.setWeight(75)
+        self.deathsCount.setFont(font)
+        self.deathsCount.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.deathsCount.setStyleSheet("color: rgb(255, 255, 255);")
+        self.deathsCount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.deathsCount.setObjectName("deathsCount")
+        self.frame_active = QtWidgets.QFrame(self.bg)
+        self.frame_active.setGeometry(QtCore.QRect(260, 190, 220, 141))
+        self.frame_active.setStyleSheet("\n"
+"background-color: rgb(76, 181, 255);\n"
+"    border-radius: 20px;")
+        self.frame_active.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_active.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_active.setObjectName("frame_active")
+        self.active = QtWidgets.QLabel(self.frame_active)
+        self.active.setGeometry(QtCore.QRect(20, 10, 181, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.active.setFont(font)
+        self.active.setStyleSheet("color: rgb(255, 255, 255);")
+        self.active.setAlignment(QtCore.Qt.AlignCenter)
+        self.active.setObjectName("active")
+        self.activeCount = QtWidgets.QLabel(self.frame_active)
+        self.activeCount.setGeometry(QtCore.QRect(10, 90, 201, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.activeCount.setFont(font)
+        self.activeCount.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.activeCount.setStyleSheet("color: rgb(255, 255, 255);")
+        self.activeCount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.activeCount.setObjectName("activeCount")
+        self.frame_critical = QtWidgets.QFrame(self.bg)
+        self.frame_critical.setGeometry(QtCore.QRect(490, 190, 220, 141))
+        self.frame_critical.setStyleSheet("background-color: rgb(144, 89, 255);\n"
+"    border-radius: 20px;")
+        self.frame_critical.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_critical.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_critical.setObjectName("frame_critical")
+        self.critical = QtWidgets.QLabel(self.frame_critical)
+        self.critical.setGeometry(QtCore.QRect(20, 10, 181, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.critical.setFont(font)
+        self.critical.setStyleSheet("color: rgb(255, 255, 255);")
+        self.critical.setAlignment(QtCore.Qt.AlignCenter)
+        self.critical.setObjectName("critical")
+        self.criticalCount = QtWidgets.QLabel(self.frame_critical)
+        self.criticalCount.setGeometry(QtCore.QRect(10, 90, 201, 45))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat")
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.criticalCount.setFont(font)
+        self.criticalCount.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.criticalCount.setStyleSheet("color: rgb(255, 255, 255);")
+        self.criticalCount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.criticalCount.setObjectName("criticalCount")
+        self.countryFlag = QtWidgets.QLabel(self.bg)
+        self.countryFlag.setGeometry(QtCore.QRect(750, 30, 250, 167))
+        self.countryFlag.setStyleSheet("#countryFlag {\n"
+"    border-radius: 20px;\n"
+"    color:red;\n"
+"}")
+        self.countryFlag.setText("")
+        self.countryFlag.setPixmap(QtGui.QPixmap("images/custom – 1.jpg"))
+        self.countryFlag.setObjectName("countryFlag")
+        self.lastUpdated = QtWidgets.QLabel(self.bg)
+        self.lastUpdated.setGeometry(QtCore.QRect(750, 280, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat Medium")
+        font.setPointSize(8)
+        font.setItalic(False)
+        font.setKerning(True)
+        self.lastUpdated.setFont(font)
+        self.lastUpdated.setStyleSheet("color: rgb(143, 143, 143);")
+        self.lastUpdated.setObjectName("lastUpdated")
+        self.country = QtWidgets.QLineEdit(self.bg)
+        self.country.setGeometry(QtCore.QRect(750, 249, 251, 31))
+        self.country.setStyleSheet("border-color: rgb(143, 143, 143);")
+        self.country.setObjectName("country")
+        self.selectCountry = QtWidgets.QLabel(self.bg)
+        self.selectCountry.setGeometry(QtCore.QRect(750, 220, 161, 31))
+        font = QtGui.QFont()
+        font.setFamily("Nirmala UI")
+        font.setPointSize(12)
+        font.setItalic(False)
+        self.selectCountry.setFont(font)
+        self.selectCountry.setStyleSheet("color: rgb(243, 243, 123);")
+        self.selectCountry.setObjectName("selectCountry")
+        self.covid19 = QtWidgets.QLabel(Dialog)
+        self.covid19.setGeometry(QtCore.QRect(0, -10, 1051, 51))
+        font = QtGui.QFont()
+        font.setFamily("Nirmala UI")
+        font.setPointSize(20)
+        font.setItalic(False)
+        self.covid19.setFont(font)
+        self.covid19.setStyleSheet("color: #fff;\n"
+"background-color:rgba(255,255,255,100);")
+        self.covid19.setAlignment(QtCore.Qt.AlignCenter)
+        self.covid19.setObjectName("covid19")
+        self.logo = QtWidgets.QLabel(Dialog)
+        self.logo.setGeometry(QtCore.QRect(420, 440, 201, 21))
+        font = QtGui.QFont()
+        font.setFamily("Montserrat Black")
+        font.setPointSize(9)
+        font.setItalic(False)
+        self.logo.setFont(font)
+        self.logo.setStyleSheet("color: rgb(143, 143, 143);")
+        self.logo.setObjectName("logo")
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        self.recovered.setText(_translate("Dialog", "Recovered"))
+        self.recoveredCount.setText(_translate("Dialog", "0"))
+        self.confirmed.setText(_translate("Dialog", "Confirmed"))
+        self.confirmedCount.setText(_translate("Dialog", "0"))
+        self.deaths.setText(_translate("Dialog", "Deaths"))
+        self.deathsCount.setText(_translate("Dialog", "0"))
+        self.active.setText(_translate("Dialog", "Active"))
+        self.activeCount.setText(_translate("Dialog", "0"))
+        self.critical.setText(_translate("Dialog", "Critical"))
+        self.criticalCount.setText(_translate("Dialog", "0"))
+        self.lastUpdated.setText(_translate("Dialog", "last updated: 01-May-2020"))
+        self.selectCountry.setText(_translate("Dialog", "Search Country :"))
+        self.covid19.setText(_translate("Dialog", "COVID-19 DASHBOARD"))
+        self.logo.setText(_translate("Dialog", "Developed By : Sihab Sahariar"))
+
+class MyForm(QDialog):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
+        self.ui = GUI()
+        self.ui.setupUi(self)
+        self.get_all()
+        countries = country.get_country()
+        completer = QCompleter(countries)
+        self.ui.country.setCompleter(completer)
+        self.ui.country.editingFinished.connect(self.search)
+    
+    def get_all(self):
+        url = "https://corona.lmao.ninja/v2/all"
+        headers = {}
+        headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17'
+
+        request = urllib.request.Request(url, headers=headers)
+        resp = urllib.request.urlopen(request)
+        data = json.loads(resp.read().decode("utf-8"))
+        time_stamp = data['updated']
+        time_stamp_ft = time.strftime('%d-%B-%Y %H:%M:%S', time.localtime(time_stamp/1000))
+
+        self.ui.activeCount.setText(str(data['active']))
+        self.ui.recoveredCount.setText(str(data['recovered']))
+        self.ui.confirmedCount.setText(str(data['cases']))
+        self.ui.deathsCount.setText(str(data['deaths']))
+        self.ui.criticalCount.setText(str(data['critical']))
+        self.ui.lastUpdated.setText("Last updated: " + time_stamp_ft)        
+
+    def search(self):        
+        country = urllib.parse.quote(self.ui.country.text())
+        url = f"https://corona.lmao.ninja/v2/countries/{country}"
+        headers = {}
+        headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17'
+        try:
+	        request = urllib.request.Request(url, headers=headers)
+	        resp = urllib.request.urlopen(request)
+	        data = json.loads(resp.read().decode("utf-8"))
+	        flag_url = data['countryInfo']['flag']
+	        request = urllib.request.Request(flag_url, headers=headers)
+	        flag = urllib.request.urlopen(request).read()
+	        pixmap = QPixmap()
+	        pixmap.loadFromData(flag)
+	        time_stamp = data['updated']
+	        time_stamp_ft = time.strftime('%d-%B-%Y %H:%M:%S', time.localtime(time_stamp/1000))
+
+
+	        self.ui.countryFlag.setPixmap(pixmap)
+	        self.ui.activeCount.setText(str(data['active']))
+	        self.ui.recoveredCount.setText(str(data['recovered']))
+	        self.ui.confirmedCount.setText(str(data['cases']))
+	        self.ui.deathsCount.setText(str(data['deaths']))
+	        self.ui.criticalCount.setText(str(data['critical']))
+	        self.ui.lastUpdated.setText("Last updated: " + time_stamp_ft)
+
+        except:
+	        self.ui.activeCount.setText('ERROR')
+	        self.ui.recoveredCount.setText('ERROR')
+	        self.ui.confirmedCount.setText('ERROR')
+	        self.ui.deathsCount.setText('ERROR')
+	        self.ui.criticalCount.setText('ERROR')
+	        self.ui.lastUpdated.setText('ERROR')     	
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    myapp = MyForm()
+    myapp.show()
+    sys.exit(app.exec_())

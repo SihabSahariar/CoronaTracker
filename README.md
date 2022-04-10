@@ -54,6 +54,7 @@ Screenshot [DASHBOARD]:
 <img src="DASH GUI [UPDATED]/ss.JPG">
 
 Screenshot [COVIDINFO DASHBOARD]:
+-----------------
 <img src="COVID_INFO/diagram.png">
 <img src="COVID_INFO/ss/1.PNG">
 <img src="COVID_INFO/ss/2.PNG">

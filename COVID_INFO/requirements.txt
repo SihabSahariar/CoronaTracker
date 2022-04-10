@@ -1,0 +1,4 @@
+geocoder==1.38.1
+PyQt5==5.15.6
+PyQtWebEngine-Qt5==5.15.2
+

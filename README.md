@@ -55,9 +55,8 @@ Screenshot [DASHBOARD]:
 
 Screenshot [COVIDINFO DASHBOARD]:
 -----------------
-Diagram :
 <img src="COVID_INFO/diagram.png">
- UI :
+-----------------
 <img src="COVID_INFO/ss/1.PNG">
 <img src="COVID_INFO/ss/2.PNG">
 <img src="COVID_INFO/ss/3.PNG">
